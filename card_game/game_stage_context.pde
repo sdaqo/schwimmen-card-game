@@ -312,11 +312,6 @@ class AiStageContext extends GameStageContext {
   }
 }
 
-
-
-
-
-
 class EndStageContext extends GameStageContext {
   @Override
     void initUI() {
@@ -333,7 +328,7 @@ class EndStageContext extends GameStageContext {
   }
 
   @Override
-    void draw() {
+  void draw() {
     background(60, 72, 107);
 
     this.renderUI();
@@ -478,12 +473,12 @@ class RemotePlayerStageContext extends GameStageContext {
     // Just extending the standard player interactions, should be fine...
     void playerLeave(String name) {
       for (Player pl : game_state.players) {
-        if (pl.name != name) {
+        if (!pl.name.equals(name)) {
           continue;
         }
         
         pl.reset();  
-        if (pl.name == game_state.getPlayer().name) {
+        if (pl.name.equals(game_state.getPlayer().name)) {
           new PlayerInteractions().endTurn();
         }
         
@@ -547,7 +542,7 @@ class PlayerListOnlineStageContext extends GameStageContext {
       game_state.players = new ArrayList<Player>();
 
       for (int i = 0; i < names.size(); i++) {
-        if (names.get(i) == game_state.online_name) {
+        if (names.get(i).equals(game_state.online_name)) {
           // Create normal Player Instance
           Player plr = new Player(names.get(i));
 
@@ -559,9 +554,12 @@ class PlayerListOnlineStageContext extends GameStageContext {
           }
 
           plr.addToHand(cards);
+          
+          println("Created Local Player ", names.get(i));
           game_state.players.add(plr);
         } else {
           // Create Remote Player Instance
+          println("Created Remote Player", names.get(i));
           game_state.players.add(new RemotePlayer(names.get(i), card_ids.get(i)));
         }
       }
@@ -581,6 +579,8 @@ class PlayerListOnlineStageContext extends GameStageContext {
       
       game_state.setTradeLock(false);
       game_state.setLastRound(false);
+      
+      game_state.player_interactor = new OnlinePlayerInteractions();
       
       game_state.setPlayer(game_state.players.get(0));
       
@@ -625,7 +625,7 @@ class PlayerListOnlineStageContext extends GameStageContext {
     
     if (is_player_ready) {
       textSize(20);
-      text("You are Ready", width+190/2-textWidth("You are Ready")/2,  height-125);
+      text("You are Ready", width-190+textWidth("You are Ready")/2,  height-125);
     }
     
     textAlign(LEFT, CENTER);
