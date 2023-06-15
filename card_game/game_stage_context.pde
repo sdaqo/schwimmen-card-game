@@ -705,7 +705,7 @@ class MenuStageContext extends GameStageContext {
     };
 
     OnBtnClickEventListener toggle_music = () -> {
-      if (audio_thread.isInterrupted()) {
+      if (audio_thread.isInterrupted() || !audio_thread.isAlive()) {
         audio_thread = new AudioThread();
         audio_thread.start();
       } else {
@@ -732,7 +732,7 @@ class MenuStageContext extends GameStageContext {
     String music_state;
 
     
-    if (audio_thread.isInterrupted()) {
+    if (audio_thread.isInterrupted() || !audio_thread.isAlive()) {
       music_state = "Music: OFF";
     } else {
       music_state = "Music: ON";

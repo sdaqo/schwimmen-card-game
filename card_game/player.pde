@@ -59,16 +59,24 @@ class Player {
   float handWorth() {
     return calculate_hand_worth(this.hand);
   }
+  
+  Card getCardFromID(int id) {
+    for(Card card : hand) {
+      if (card.id == id) {
+        return card;
+      }
+    }
+    return null;
+  }
 
   void play() {
   }
 }
 
-class RemotePlayer extends Player {
-  boolean is_remote = true;
-  
+class RemotePlayer extends Player {  
   RemotePlayer(String name, List<Integer> deck_card_ids) {
     super(name);
+    this.is_remote = true;
     for(int id : deck_card_ids) {
       Card card = game_state.getCardFromID(id);
       this.addToHand(card);

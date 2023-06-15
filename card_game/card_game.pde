@@ -53,7 +53,6 @@ public void setup() {
   heart = loadImage("images/heart.png");
   heart_outline = loadImage("images/heart-outline.png");
   
-  audio_thread.start();
   println("Finished Loading!");
 }
 

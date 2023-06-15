@@ -16,19 +16,9 @@ class CardTrader {
   }
 
   void end(Card card_to_trade) {
-    int card1_idx = hand1.indexOf(trading_card);
-    int card2_idx = hand2.indexOf(card_to_trade);
-
-
-    hand1.add(card1_idx, card_to_trade);
-    hand1.remove(trading_card);
-
-    hand2.add(card2_idx, trading_card);
-    hand2.remove(card_to_trade);
+    game_state.player_interactor.tradeCard(trading_card.id, card_to_trade.id);
 
     is_trading = false;
-
-    game_state.trade_lock = true;
   }
 
 

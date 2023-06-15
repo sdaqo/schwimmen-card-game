@@ -13,7 +13,6 @@ ArrayList<Card> load_cards() {
   // Add the cards
   for (File f : files) {
     // <value>_of_<type>.png
-    println("\n", f.getName(), ":");
     String[] card_parts = split(f.getName(), "_");
     String card_value = card_parts[0];
     String card_type = card_parts[2].substring(0, card_parts[2].length() - 4);
@@ -33,11 +32,9 @@ ArrayList<Card> load_cards() {
     String card_name = f.getName().substring(0, f.getName().length() - 4);
     PImage img = loadImage("images/cards/" + f.getName());
     
-    println(card_id, card_value_numeric, card_type, card_value);
     loaded_cards.add(new Card(img, card_name, card_value_numeric, card_type, card_value, card_id));
     card_id++;
     
-    println(card_id, card_value_numeric, card_type, card_value);
     loaded_cards.add(new Card(img, card_name, card_value_numeric, card_type, card_value, card_id));
     card_id++;
   }
