@@ -1,14 +1,19 @@
 ArrayList<Card> load_cards() {
   File dir;
+  dir = new File(sketchPath("images/cards"));
+  
+  File[] files = dir.listFiles();
+  Arrays.sort(files);
 
   ArrayList<Card> loaded_cards = new ArrayList<Card>();
-  dir = new File(sketchPath("images/cards"));
+
 
   int card_id = 0;
 
   // Add the cards
-  for (File f : dir.listFiles()) {
+  for (File f : files) {
     // <value>_of_<type>.png
+    println("\n", f.getName(), ":");
     String[] card_parts = split(f.getName(), "_");
     String card_value = card_parts[0];
     String card_type = card_parts[2].substring(0, card_parts[2].length() - 4);
@@ -18,7 +23,7 @@ ArrayList<Card> load_cards() {
       card_value_numeric = Integer.parseInt(card_value);
     }
     catch(NumberFormatException e) {
-      if (card_value == "ace") {
+      if (card_value.equals("ace")) {
         card_value_numeric = 11;
       } else {
         card_value_numeric = 10;
