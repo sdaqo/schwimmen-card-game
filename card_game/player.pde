@@ -59,15 +59,6 @@ class Player {
   float handWorth() {
     return calculate_hand_worth(this.hand);
   }
-  
-  Card getCardFromID(int id) {
-    for(Card card : hand) {
-      if (card.id == id) {
-        return card;
-      }
-    }
-    return null;
-  }
 
   void play() {
   }

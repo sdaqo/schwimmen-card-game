@@ -33,7 +33,9 @@ class Computer extends Player {
     }
     
     if (best_card_trade_value > current_cards_worth) {
-      game_state.player_interactor.tradeCard(best_card_to_trade_from.id, best_card_to_trade.id);
+      game_state.card_trader.setHands(game_state.getPlayer().hand, game_state.current_cards);
+      game_state.card_trader.begin(best_card_to_trade_from);
+      game_state.card_trader.end(best_card_to_trade);
     } else {
       if (current_cards_worth > this.handWorth()) {
         game_state.player_interactor.tradeAllCards();

@@ -1,10 +1,3 @@
-/*
-  TODO FOR ONLINE MODE:
-    - CARDS ARE NOT BEING CORRECTLY MATCHED TO THEIR IDs
-    - GAME STAGE CONTEXT NOT CHANGING CORRECTLY IF A REMOTE PLAYER IS PLAYING
-    - NO RPCs ARE MADE WHEN PLAYING MAKING MOVES IN ONLINE MODE
-*/
-
 import processing.net.*;
 import processing.sound.*;
 import java.lang.reflect.Method;

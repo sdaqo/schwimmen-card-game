@@ -66,23 +66,9 @@ class PlayerInteractions { //<>//
   }
 
   void tradeCard(int id1, int id2) {
-    ArrayList<Card> hand1 = game_state.getPlayer().hand;
-    ArrayList<Card> hand2 = game_state.current_cards;
-    
-    Card trading_card = game_state.getPlayer().getCardFromID(id1);
-    Card card_to_trade = game_state.getCardFromID(id2);
-    
-    int card1_idx = hand1.indexOf(trading_card);
-    int card2_idx = hand2.indexOf(card_to_trade);
-
-
-    hand1.add(card1_idx, card_to_trade);
-    hand1.remove(trading_card);
-
-    hand2.add(card2_idx, trading_card);
-    hand2.remove(card_to_trade);
-    
-    game_state.setTradeLock(true);
+    game_state.card_trader.setHands(game_state.getPlayer().hand, game_state.current_cards);
+    game_state.card_trader.begin(game_state.getCardFromID(id1));
+    game_state.card_trader.end(game_state.getCardFromID(id2));
     this.postprocess("tradeCard", id1, id2);
   }
 }
