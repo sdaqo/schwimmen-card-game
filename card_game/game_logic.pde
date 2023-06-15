@@ -67,9 +67,8 @@ class PlayerInteractions { //<>//
 
   void tradeCard(int id1, int id2) {
     game_state.card_trader.setHands(game_state.getPlayer().hand, game_state.current_cards);
-    game_state.card_trader.begin(game_state.getCardFromID(id1));
+    game_state.card_trader.begin(game_state.getPlayer().getCardFromID(id1));
     game_state.card_trader.end(game_state.getCardFromID(id2));
-    this.postprocess("tradeCard", id1, id2);
   }
 }
 
