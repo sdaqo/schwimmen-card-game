@@ -29,7 +29,7 @@ Object invokeJsonRPC(String raw_message, Class<?> rpc_interface, Object rpc_inte
   for (Method m : interface_methods) {
     if (m.getName().equals(msg.method)) {
       method = m;
-    }
+    } 
   }
 
   if (method == null) {
@@ -46,8 +46,9 @@ Object invokeJsonRPC(String raw_message, Class<?> rpc_interface, Object rpc_inte
       );
   }
   catch(InvocationTargetException e) {
+    e.printStackTrace();
     throw new RuntimeException(
-      "Could not invoke method: " + method.getName() + " with params " + Arrays.toString(msg.params)
+      "Could not invoke method: " + method.getName() + " with params " + Arrays.toString(msg.params) + ":" + e.getMessage()
       );
   }
 }

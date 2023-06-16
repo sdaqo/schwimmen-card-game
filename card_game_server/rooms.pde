@@ -121,6 +121,11 @@ class Room {
     });
     
     if (toRemove.size() > 0) {
+      if (this.players.size() <= 0) {
+        rooms.remove(this.room_id);
+        return;
+      }
+      
       if (!is_game_started) {
         sendPlayerlist();
       } else {
