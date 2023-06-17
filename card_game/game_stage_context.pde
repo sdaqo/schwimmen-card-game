@@ -235,8 +235,7 @@ class OnlineScoreboardStageContext extends ScoreboardStageContext {
           continue;
         }
 
-        game_state.cards.addAll(pl.hand);
-        pl.hand = new ArrayList<Card>();
+        pl.reset();
 
         List<Card> cards = new ArrayList<>();
         for (int id : pl_map.get(pl.name)) {
@@ -251,6 +250,8 @@ class OnlineScoreboardStageContext extends ScoreboardStageContext {
 
     void startGame(List<Integer> global_deck) {
       game_state.cards.addAll(game_state.current_cards);
+      game_state.current_cards = new ArrayList<Card>();
+      
       for ( int id : global_deck ) {
         Card card = game_state.getCardFromID(id);
         game_state.current_cards.add(card);
@@ -677,6 +678,8 @@ class PlayerListOnlineStageContext extends GameStageContext {
 
     void startGame(List<Integer> global_deck) {
       game_state.cards.addAll(game_state.current_cards);
+      game_state.current_cards = new ArrayList<Card>();
+
       for ( int id : global_deck ) {
         Card card = game_state.getCardFromID(id);
         game_state.current_cards.add(card);

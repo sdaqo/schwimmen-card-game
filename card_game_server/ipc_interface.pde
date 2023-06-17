@@ -73,8 +73,7 @@ class RoomRpcInterface {
   boolean nextRound() {
     this.player.is_ready = true;
     
-    if (this.player.room.checkReadyStatus() &&
-        !this.player.room.is_game_started) {
+    if (this.player.room.checkReadyStatus()) {
       this.player.room.initNewRound();
       this.player.room.startGame();
     }
