@@ -6,6 +6,7 @@ class GameState {
   PlayerInteractions player_interactor;
   Client player_client;
   String online_name;
+  boolean is_online;
   private Player current_player;
   private boolean trade_lock;
   private boolean last_round;

@@ -730,7 +730,7 @@ class PlayerListOnlineStageContext extends GameStageContext {
 
     if (is_player_ready) {
       textSize(22);
-      text("You are Ready", width-190+textWidth("You are Ready")/2, height-90);
+      text("You are Ready", width-105-textWidth("You are Ready")/2, height-90);
     }
 
     textAlign(LEFT, CENTER);
@@ -793,11 +793,13 @@ class MenuStageContext extends GameStageContext {
     OnBtnClickEventListener start_normal_game = () -> {
       // Prevent annoying flicker before switching due to rotating
       background(60, 72, 107);
+      game_state.is_online = false;
       game_state.setGameStage(new BeginStageContext());
     };
 
     OnBtnClickEventListener start_online_game = () -> {
       background(60, 72, 107);
+      game_state.is_online = true;
       game_state.setGameStage(new BeginOnlineStageContext());
     };
 
@@ -844,7 +846,7 @@ class MenuStageContext extends GameStageContext {
     }
 
     textSize(20);
-    text(music_state, 100-textWidth(music_state)/2 + 10, height-75);
+    text(music_state, 105-textWidth(music_state)/2 + 10, height-75);
 
 
     rotate(PI/3.0);

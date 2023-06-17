@@ -1,4 +1,4 @@
-class PlayerInteractions { //<>// //<>//
+class PlayerInteractions { //<>//
   void postprocess(String method_name, Object... params) {
   }
 
@@ -106,7 +106,12 @@ class OnlinePlayerInteractions extends PlayerInteractions {
 
 
 void end_round() {
-  game_state.setGameStage(new ScoreboardStageContext());
+  if (game_state.is_online) {
+    game_state.setGameStage(new OnlineScoreboardStageContext());
+  } else {
+    game_state.setGameStage(new ScoreboardStageContext());
+  }
+  
   List<Player> sorted_players = new ArrayList<Player>(game_state.players);
   sorted_players.sort(Comparator.comparingDouble(Player::handWorth));
   sorted_players = sorted_players
