@@ -5,6 +5,8 @@ class GameState {
   CardTrader card_trader;
   PlayerInteractions player_interactor;
   Client player_client;
+  String server_addr;
+  String room_id;
   String online_name;
   boolean is_online;
   private Player current_player;
@@ -59,7 +61,16 @@ class GameState {
   }
 
   void initNewGame() {
-    this.setGameStage(new BeginStageContext());
+    if (is_online) {
+      if (!player_client.active()) {
+        player_client.dispose();
+        this.setGameStage(new ErrorStageContext("No Connection to the Server"));
+      }
+      
+      this.setGameStage(new PlayerListOnlineStageContext());
+    } else {
+      this.setGameStage(new BeginStageContext());
+    }
     for (Player p : players) {
       p.reset();
       p.health = 3;

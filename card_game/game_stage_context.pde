@@ -422,11 +422,18 @@ class EndStageContext extends GameStageContext {
   @Override
     void initUI() {
     OnBtnClickEventListener back_to_menu = () -> {
+      if (game_state.is_online) {
+        game_state.player_client.dispose();
+      }
       game_state.setGameStage(new MenuStageContext());
     };
 
     OnBtnClickEventListener new_game = () -> {
-      game_state.initNewGame();
+      if (game_state.is_online) {
+        game_state.setGameStage(new PlayerListOnlineStageContext(null, null));
+      } else {
+        game_state.initNewGame();
+      }
     };
 
     this.buttons.add(new Button(width/2-210, height-70, 200, 50, "New Game", new_game));
@@ -460,8 +467,6 @@ class EndStageContext extends GameStageContext {
     text(winner.name, x, y);
     int offset = Math.round(textWidth(winner.name)) + 15;
     winner.renderHealth(x + offset, y - 6, 25);
-    offset += 25 * 3;
-    text(winner.rounds_won, x + offset, y);
   }
 }
 
@@ -529,7 +534,11 @@ class BeginOnlineStageContext extends GameStageContext {
       game_state.player_client = new Client(APP, ip, port);
       rpcToServer("createRoom", room_id);
       rpcToServer("joinRoom", room_id, player_name);
-      game_state.setGameStage(new PlayerListOnlineStageContext(room_id, address));
+      
+      game_state.server_addr = address;
+      game_state.room_id = room_id;
+      
+      game_state.setGameStage(new PlayerListOnlineStageContext());
     };
 
     OnBtnClickEventListener join_game = () -> {
@@ -541,7 +550,11 @@ class BeginOnlineStageContext extends GameStageContext {
 
       game_state.player_client = new Client(APP, ip, port);
       rpcToServer("joinRoom", room_id, player_name);
-      game_state.setGameStage(new PlayerListOnlineStageContext(room_id, address));
+      
+      game_state.server_addr = address;
+      game_state.room_id = room_id;
+      
+      game_state.setGameStage(new PlayerListOnlineStageContext());
     };
 
     InputEventListener server_address = (String addr) -> {
@@ -632,13 +645,7 @@ class RemotePlayerStageContext extends GameStageContext {
 
 class PlayerListOnlineStageContext extends GameStageContext {
   boolean is_player_ready = false;
-  String room_id, server_addr;
-
-  PlayerListOnlineStageContext(String room_id, String server_addr) {
-    this.room_id = room_id;
-    this.server_addr = server_addr;
-  }
-
+  
   class RpcInterface {
     void setPlayerList(List<String> names, List<List<Integer>> card_ids) {
       for (Player player : game_state.players) {
@@ -729,7 +736,7 @@ class PlayerListOnlineStageContext extends GameStageContext {
 
     textSize(26);
     textAlign(LEFT, BOTTOM);
-    text("Connected to " + server_addr + " in Room " + room_id, 10, 40);
+    text("Connected to " + game_state.server_addr + " in Room " + game_state.room_id, 10, 40);
 
     if (is_player_ready) {
       textSize(22);
