@@ -305,7 +305,7 @@ class OnlineScoreboardStageContext extends ScoreboardStageContext {
     
     if (is_player_ready) {
       textSize(22);
-      text("You are Ready", width/2-300+textWidth("You are Ready")/2, height-90);
+      text("You are Ready", width/2-textWidth("You are Ready")/2, height-90);
     }
     
     if (game_state.player_client.available() > 0) {
@@ -429,11 +429,7 @@ class EndStageContext extends GameStageContext {
     };
 
     OnBtnClickEventListener new_game = () -> {
-      if (game_state.is_online) {
-        game_state.setGameStage(new PlayerListOnlineStageContext(null, null));
-      } else {
-        game_state.initNewGame();
-      }
+      game_state.initNewGame();
     };
 
     this.buttons.add(new Button(width/2-210, height-70, 200, 50, "New Game", new_game));
