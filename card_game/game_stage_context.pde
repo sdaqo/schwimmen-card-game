@@ -30,7 +30,8 @@ class GameStageContext {
 
   void mouseClicked() {
     if (mouseButton != LEFT) {
-      return; }
+      return;
+    }
 
     for (Button b : this.buttons) {
       b.checkAndCall();
@@ -219,6 +220,110 @@ class ScoreboardStageContext extends GameStageContext {
   }
 }
 
+class OnlineScoreboardStageContext extends ScoreboardStageContext {
+  boolean is_player_ready = false;
+  
+  class RpcInterface {
+
+    // Update cards of players here
+    void setPlayerList(List<String> names, List<List<Integer>> card_ids) {
+      Map<String, List<Integer>> pl_map = IntStream.range(0, names.size()).boxed()
+        .collect(Collectors.toMap(names::get, card_ids::get));
+
+      for (Player pl : game_state.players) {
+        if (!pl_map.containsKey(pl.name)) {
+          continue;
+        }
+
+        game_state.cards.addAll(pl.hand);
+        pl.hand = new ArrayList<Card>();
+
+        List<Card> cards = new ArrayList<>();
+        for (int id : pl_map.get(pl.name)) {
+          Card card = game_state.getCardFromID(id);
+          cards.add(card);
+          game_state.cards.remove(card);
+        }
+
+        pl.addToHand(cards);
+      }
+    }
+
+    void startGame(List<Integer> global_deck) {
+      game_state.cards.addAll(game_state.current_cards);
+      for ( int id : global_deck ) {
+        Card card = game_state.getCardFromID(id);
+        game_state.current_cards.add(card);
+      }
+
+      game_state.setTradeLock(false);
+      game_state.setLastRound(false);
+
+      game_state.player_interactor = new OnlinePlayerInteractions();
+
+      game_state.setPlayer(game_state.players.get(0));
+
+      Player curr_player = game_state.getPlayer();
+
+      if (curr_player.is_remote) {
+        game_state.setGameStage(new RemotePlayerStageContext());
+      } else if (curr_player.is_ai) {
+        game_state.setGameStage(new AiStageContext());
+        thread("ai_play");
+      } else {
+        game_state.setGameStage(new PlayingStageContext());
+      }
+    }
+    
+    void playerLeave(String name) {
+      for (Player pl : game_state.players) {
+        if (!pl.name.equals(name)) {
+          continue;
+        }
+
+        pl.reset();
+        game_state.players.remove(pl);
+      }
+    }
+  }
+
+
+  @Override
+    void initUI() {
+    OnBtnClickEventListener next = () -> {
+      is_player_ready = true;
+      rpcToServer("nextRound");
+    };
+
+    this.buttons.add(new Button(width/2-100, height-70, 200, 50, "Next Round", next));
+  }
+
+  @Override
+  void draw() {
+    super.draw();
+    
+    if (is_player_ready) {
+      textSize(22);
+      text("You are Ready", width/2-300+textWidth("You are Ready")/2, height-90);
+    }
+    
+    if (game_state.player_client.available() > 0) {
+      String json = game_state.player_client.readStringUntil(125); // }
+      if (json==null) {
+        return;
+      }
+      Object ret;
+
+      try {
+        ret = invokeJsonRPC(json, RpcInterface.class, new RpcInterface());
+      }
+      catch(Exception e) {
+        println(e.getMessage());
+        return;
+      }
+    }
+  }
+}
 
 class BeginStageContext extends GameStageContext {
   String name = "";
@@ -328,7 +433,7 @@ class EndStageContext extends GameStageContext {
   }
 
   @Override
-  void draw() {
+    void draw() {
     background(60, 72, 107);
 
     this.renderUI();
@@ -476,12 +581,12 @@ class RemotePlayerStageContext extends GameStageContext {
         if (!pl.name.equals(name)) {
           continue;
         }
-        
-        pl.reset();  
+
+        pl.reset();
         if (pl.name.equals(game_state.getPlayer().name)) {
           new PlayerInteractions().endTurn();
         }
-        
+
         game_state.players.remove(pl);
       }
     }
@@ -527,12 +632,12 @@ class RemotePlayerStageContext extends GameStageContext {
 class PlayerListOnlineStageContext extends GameStageContext {
   boolean is_player_ready = false;
   String room_id, server_addr;
-  
+
   PlayerListOnlineStageContext(String room_id, String server_addr) {
-      this.room_id = room_id;
-      this.server_addr = server_addr;
+    this.room_id = room_id;
+    this.server_addr = server_addr;
   }
-  
+
   class RpcInterface {
     void setPlayerList(List<String> names, List<List<Integer>> card_ids) {
       for (Player player : game_state.players) {
@@ -554,7 +659,7 @@ class PlayerListOnlineStageContext extends GameStageContext {
           }
 
           plr.addToHand(cards);
-          
+
           println("Created Local Player ", names.get(i));
           game_state.players.add(plr);
         } else {
@@ -576,16 +681,16 @@ class PlayerListOnlineStageContext extends GameStageContext {
         Card card = game_state.getCardFromID(id);
         game_state.current_cards.add(card);
       }
-      
+
       game_state.setTradeLock(false);
       game_state.setLastRound(false);
-      
+
       game_state.player_interactor = new OnlinePlayerInteractions();
-      
+
       game_state.setPlayer(game_state.players.get(0));
-      
+
       Player curr_player = game_state.getPlayer();
-      
+
       if (curr_player.is_remote) {
         game_state.setGameStage(new RemotePlayerStageContext());
       } else if (curr_player.is_ai) {
@@ -618,16 +723,16 @@ class PlayerListOnlineStageContext extends GameStageContext {
     void draw() {
     background(60, 72, 107);
     this.renderUI();
-    
+
     textSize(26);
     textAlign(LEFT, BOTTOM);
     text("Connected to " + server_addr + " in Room " + room_id, 10, 40);
-    
+
     if (is_player_ready) {
-      textSize(20);
-      text("You are Ready", width-190+textWidth("You are Ready")/2,  height-125);
+      textSize(22);
+      text("You are Ready", width-190+textWidth("You are Ready")/2, height-90);
     }
-    
+
     textAlign(LEFT, CENTER);
     fill(240, 240, 240);
     textSize(37);
@@ -731,13 +836,13 @@ class MenuStageContext extends GameStageContext {
 
     String music_state;
 
-    
+
     if (audio_thread.isInterrupted() || !audio_thread.isAlive()) {
       music_state = "Music: OFF";
     } else {
       music_state = "Music: ON";
     }
-    
+
     textSize(20);
     text(music_state, 100-textWidth(music_state)/2 + 10, height-75);
 

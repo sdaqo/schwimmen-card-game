@@ -27,39 +27,58 @@ class OpenRpcInterface {
     LOGGER.info(msg("Client", client.ip(), "joined room", room_id, "with name:", client_name));
   }
 }
-
+ 
 class RoomRpcInterface {
+  // The boolean return value indicates wether the Rpc should be relayed to the other clients
+  
   Player player;
 
   RoomRpcInterface(Player player) {
     this.player = player;
   }
 
-  void tradeCard(Integer id1, Integer id2) {
-    // Just relay event
+  boolean tradeCard(Integer id1, Integer id2) {
+    return true;
   }
 
-  void tradeAllCards() {
+  boolean tradeAllCards() {
+    return true;
   }
 
-  void closeUp() {
-    // Just relay event
+  boolean closeUp() {
+    return true;
   }
 
-  void endTurn() {
-    // Just relay event
+  boolean endTurn() {
+    return true;
   }
 
-  void startGame() {
-    this.player.room.setGameStatus(true);
-  }
-
-  void endGame() {
-    // Reset Stuff
+  boolean endGame() {
     this.player.room.setGameStatus(false);
+    
+    return false;
   }
   
-  void ready() {
+  boolean ready() {
     this.player.is_ready = true;
+        
+    if (this.player.room.checkReadyStatus() &&
+        !this.player.room.is_game_started) {
+      this.player.room.startGame();
+    }
+    
+    return false;
+  }
+  
+  boolean nextRound() {
+    this.player.is_ready = true;
+    
+    if (this.player.room.checkReadyStatus() &&
+        !this.player.room.is_game_started) {
+      this.player.room.initNewRound();
+      this.player.room.startGame();
+    }
+    
+    return false;
   }
 }

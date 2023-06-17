@@ -33,7 +33,7 @@ class Room {
       rejectClient(client, "Game has already started, you can not join.");
       return;
     }
-    
+
     for (Player player : players) {
       if (player.name.equals(client_name)) {
         rejectClient(client, "Client with this name already exsists in this Room");
@@ -43,12 +43,12 @@ class Room {
 
     List<Integer> deck;
     if (card_ids.size() <= 3) {
-      rejectClient(client, "Maximum Player limit Reached for this Room"); 
+      rejectClient(client, "Maximum Player limit Reached for this Room");
       return;
     } else {
       deck = randomDeck();
     }
-    
+
     Player new_player = new Player(client_name, client, deck, this);
 
     players.add(new_player);
@@ -65,7 +65,7 @@ class Room {
       deck.add(card_ids.get(rand_idx));
       card_ids.remove(rand_idx);
     }
-    
+
     return deck;
   }
 
@@ -73,22 +73,38 @@ class Room {
   void sendPlayerlist() {
     ArrayList<List<Integer>> decks = new ArrayList<>();
     ArrayList<String> names = new ArrayList<>();
-    
+
     for (Player player : players) {
       decks.add(player.cards);
       names.add(player.name);
     }
-   
+
     serverBroadcast(composeRpcMessage("setPlayerList", names, decks));
   }
-  
+
   void setGameStatus(boolean is_started) {
     is_game_started = is_started;
   }
 
+  void initNewRound() {
+    for ( Player pl : players ) {
+      // Return Cards 
+      this.card_ids.addAll(pl.cards);
+      
+      // Give new Cards
+      pl.cards = new ArrayList<Integer>(randomDeck());
+    }
+    
+    this.card_ids.addAll(this.global_hand);
+    this.global_hand = randomDeck();
+    
+    sendPlayerlist();
+  }
+
   void listen() {
-    // Listen to events of room clients and do the thing
+    // Listen to events of room clients and do the things
     List<Player> toRemove = new ArrayList<Player>();
+    
     for (Player player : players) {
       Client client = player.client;
       if (!client.active()) {
@@ -105,7 +121,9 @@ class Room {
 
         try {
           ret = invokeJsonRPC(json, RoomRpcInterface.class, new RoomRpcInterface(player));
-          clientBroadcast(client, json);
+          if ((boolean) ret) {
+            clientBroadcast(client, json);
+          }
         }
         catch(Exception e) {
           // Make this less lazy
@@ -115,28 +133,37 @@ class Room {
         }
       }
     }
-    
-    toRemove.forEach((Player pl) -> {
-      this.players.remove(pl);
-    });
-    
-    if (toRemove.size() > 0) {
+
+    this.removeInactive(toRemove);
+  }
+
+  private void removeInactive(List<Player> inactive) {
+    inactive.forEach((Player pl) -> {
+        this.players.remove(pl);
+      }
+    );
+
+    if (inactive.size() > 0) {
       if (this.players.size() <= 0) {
+        LOGGER.info(msg("Room", this.room_id, "removed because no players are present."));
         rooms.remove(this.room_id);
         return;
       }
-      
+
       if (!is_game_started) {
         sendPlayerlist();
       } else {
-        toRemove.forEach((Player pl) -> {
+        inactive.forEach((Player pl) -> {
           serverBroadcast(composeRpcMessage("playerLeave", pl.name));
-        });
+        }
+        );
       }
     }
-    
+  }
+
+  boolean checkReadyStatus() {
     boolean all_ready = false;
-    for( Player pl : players ) {
+    for ( Player pl : players ) {
       if (!pl.is_ready) {
         all_ready = false;
         break;
@@ -144,13 +171,19 @@ class Room {
         all_ready = true;
       }
     }
-        
-    if (all_ready && !is_game_started) {
-      serverBroadcast(composeRpcMessage("startGame", global_hand));
-      setGameStatus(true);
-    }
+    
+    return all_ready;
   }
 
+  void startGame() {
+    serverBroadcast(composeRpcMessage("startGame", global_hand));
+    setGameStatus(true);
+    
+    for ( Player pl : players) {
+      pl.is_ready = false;
+    }
+  }
+  
   private void serverBroadcast(String msg) {
     LOGGER.info(msg("Broadcasting to everyone:", msg));
     for (Player player : players) {
@@ -159,7 +192,7 @@ class Room {
   }
 
   private void clientBroadcast(Client client, String msg) {
-    LOGGER.info(msg("Broadcasting to everyone but", client.ip(), ":",  msg));
+    LOGGER.info(msg("Broadcasting to everyone but", client.ip(), ":", msg));
     for (Player player : players) {
       if (player.client.equals(client)) {
         continue;
