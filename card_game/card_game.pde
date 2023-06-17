@@ -44,9 +44,9 @@ public void setup() {
   game_state = new GameState(players);
 
 
-  cardBack = loadImage("images/card_back.png");
-  heart = loadImage("images/heart.png");
-  heart_outline = loadImage("images/heart-outline.png");
+  cardBack = loadImage("data/images/card_back.png");
+  heart = loadImage("data/images/heart.png");
+  heart_outline = loadImage("data/images/heart-outline.png");
   
   println("Finished Loading!");
 }

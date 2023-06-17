@@ -10,7 +10,6 @@ class PlayerInteractions { //<>// //<>//
   }
 
   void endTurn() {
-    //TODO: Rewrite to fit online stuff
     Player player = game_state.getPlayer();
     if (game_state.getLastRound()) {
       player.is_closed = true;

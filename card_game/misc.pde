@@ -1,12 +1,11 @@
 ArrayList<Card> load_cards() {
   File dir;
-  dir = new File(sketchPath("images/cards"));
+  dir = new File(sketchPath("data/images/cards"));
   
   File[] files = dir.listFiles();
   Arrays.sort(files);
 
   ArrayList<Card> loaded_cards = new ArrayList<Card>();
-
 
   int card_id = 0;
 
@@ -30,7 +29,7 @@ ArrayList<Card> load_cards() {
     }
 
     String card_name = f.getName().substring(0, f.getName().length() - 4);
-    PImage img = loadImage("images/cards/" + f.getName());
+    PImage img = loadImage("data/images/cards/" + f.getName());
     
     loaded_cards.add(new Card(img, card_name, card_value_numeric, card_type, card_value, card_id));
     card_id++;

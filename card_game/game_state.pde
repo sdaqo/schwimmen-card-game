@@ -26,7 +26,6 @@ class GameState {
   }
 
   void setGameStage(GameStageContext stageCtx) {
-    println("Current Game Stage Context: ", stageCtx);
     this.game_stage_ctx = stageCtx;
   }
   
