@@ -1,4 +1,4 @@
-class PlayerInteractions { //<>// //<>//
+class PlayerInteractions { //<>// //<>// //<>//
   void postprocess(String method_name, Object... params) {
   }
 
@@ -36,8 +36,8 @@ class PlayerInteractions { //<>// //<>//
         if (current_player_index >= game_state.players.size()) {
           current_player_index = 0;
         }
-      } while (game_state.players.get(current_player_index).is_closed &&
-        game_state.players.get(current_player_index).health == 0);
+      } while (game_state.players.get(current_player_index).is_closed ||
+        game_state.players.get(current_player_index).health <= 0);
 
       game_state.setPlayer(game_state.players.get(current_player_index));
       game_state.card_trader.setHands(game_state.getPlayer().hand, game_state.current_cards);
@@ -145,6 +145,7 @@ float calculate_hand_worth(ArrayList<Card> hand) {
   List<String> card_ranks = hand
     .stream().map(Card::get_rank)
     .collect(Collectors.toList());
+  // NPE
 
   List<String> card_types = hand
     .stream().map(Card::get_type)

@@ -27,7 +27,7 @@ Server server;
 HashMap<String, Room> rooms;
 ArrayList<Client> global_clients;
 
-final static Logger LOGGER =  Logger.getLogger("CardGameServer");
+final static Logger LOGGER = Logger.getLogger("CardGameServer");
 
 
 void setup() {

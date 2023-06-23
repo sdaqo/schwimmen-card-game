@@ -578,6 +578,11 @@ class BeginOnlineStageContext extends GameStageContext {
   @Override
     void draw() {
     background(60, 72, 107);
+    
+    textSize(60);
+    text("Server Setup", width/2-textWidth("Server Setup")/2, height/5);
+    
+    textSize(30);
     text(errstr, width/2-textWidth(errstr)/2, height-140);
     this.renderUI();
   }

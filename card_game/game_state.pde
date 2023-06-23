@@ -66,6 +66,7 @@ class GameState {
         this.setGameStage(new ErrorStageContext("No Connection to the Server"));
       }
       
+      rpcToServer("resetGame");
       this.setGameStage(new PlayerListOnlineStageContext());
     } else {
       this.setGameStage(new BeginStageContext());
