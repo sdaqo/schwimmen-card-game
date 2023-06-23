@@ -37,6 +37,10 @@ ArrayList<Card> load_cards() {
     loaded_cards.add(new Card(img, card_name, card_value_numeric, card_type, card_value, card_id));
     card_id++;
   }
+  
+  for (Card card : loaded_cards) {
+    println(card.id);
+  }
   return loaded_cards;
 }
 

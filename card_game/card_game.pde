@@ -19,7 +19,7 @@ import java.util.Arrays;
 int IMG_H = 300;
 int IMG_W = 200;
 int SPACING = -30;
-int FRAMERATE = 60;
+int FRAMERATE = 30;
 PApplet APP = this;
 
 

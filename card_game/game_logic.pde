@@ -141,7 +141,9 @@ void ai_play() {
 
 float calculate_hand_worth(ArrayList<Card> hand) {
   float worth = 0;
-
+  
+  println(hand.toString());
+  
   List<String> card_ranks = hand
     .stream().map(Card::get_rank)
     .collect(Collectors.toList());

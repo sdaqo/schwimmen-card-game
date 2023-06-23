@@ -111,6 +111,8 @@ class GameState {
         return card;
       }
     }
+    
+    println("Card with ID", id, "does not exsist");
     return null;
   }
 }

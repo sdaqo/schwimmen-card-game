@@ -236,6 +236,12 @@ class OnlineScoreboardStageContext extends ScoreboardStageContext {
         }
 
         pl.reset();
+      }
+      
+      for (Player pl : game_state.players) {
+        if (!pl_map.containsKey(pl.name)) {
+          continue;
+        }
 
         List<Card> cards = new ArrayList<>();
         for (int id : pl_map.get(pl.name)) {
