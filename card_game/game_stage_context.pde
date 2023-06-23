@@ -261,8 +261,12 @@ class OnlineScoreboardStageContext extends ScoreboardStageContext {
       game_state.setLastRound(false);
 
       game_state.player_interactor = new OnlinePlayerInteractions();
+      
+      List<Player> living_players = game_state.players.stream()
+        .filter(p -> p.health != 0)
+        .collect(Collectors.toList());
 
-      game_state.setPlayer(game_state.players.get(0));
+      game_state.setPlayer(living_players.get(0));
 
       Player curr_player = game_state.getPlayer();
 

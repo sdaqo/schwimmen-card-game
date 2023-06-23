@@ -52,7 +52,11 @@ class GameState {
     setLastRound(false);
     
     // Start Game
-    setPlayer(players.get(0));
+    List<Player> living_players = players.stream()
+      .filter(p -> p.health != 0)
+      .collect(Collectors.toList());
+
+    setPlayer(living_players.get(0));
     if (getPlayer().is_ai) {
       game_state.setGameStage(new AiStageContext());
       thread("ai_play");
