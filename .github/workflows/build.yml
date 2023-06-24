@@ -11,7 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Cache node modules
+      - name: Cache Processing
         id: cache-processing-bin-win
         uses: actions/cache@v3
         env:
@@ -25,13 +25,13 @@ jobs:
         shell: powershell  
         run: |
           $ProgressPreference = 'SilentlyContinue'
-          Invoke-WebRequest 'https://github.com/processing/processing4/releases/download/processing-1292-4.2/processing-4.2-windows-x64.zip' ^
+          Invoke-WebRequest 'https://github.com/processing/processing4/releases/download/processing-1292-4.2/processing-4.2-windows-x64.zip' `
             -OutFile processing.zip `
             -UseBasicParsing
             
           Expand-Archive processing.zip -DestinationPath .
           
-          Invoke-WebRequest 'https://github.com/processing/processing-sound/releases/download/v2.3.1/sound.zip'
+          Invoke-WebRequest 'https://github.com/processing/processing-sound/releases/download/v2.3.1/sound.zip' `
             -OutFile sound.zip `
             -UseBasicParsing
             
