@@ -101,12 +101,14 @@ class AudioThread extends Thread {
     }
     while (!isInterrupted()) {
       int random_index = Math.round(random(0, music.size() - 1));
-      SoundFile sound = new SoundFile(APP, music.get(random_index));
-      if (sound == null) {
+      SoundFile sound;
+      
+      try {
+        sound = new SoundFile(APP, music.get(random_index));
+        sound.play();
+      } catch(Exception e) {
         continue;
       }
-      sound.play();
-
       while (true) {
         if (!sound.isPlaying()) {
           break;

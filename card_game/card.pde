@@ -13,7 +13,11 @@ class Card {
     this.img  = img;
     this.id = id;
   }
-
+  
+  public int get_id() {
+    return this.id;
+  }
+  
   public String get_name() {
     return this.name;
   }

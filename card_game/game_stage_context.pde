@@ -229,7 +229,9 @@ class OnlineScoreboardStageContext extends ScoreboardStageContext {
     void setPlayerList(List<String> names, List<List<Integer>> card_ids) {
       Map<String, List<Integer>> pl_map = IntStream.range(0, names.size()).boxed()
         .collect(Collectors.toMap(names::get, card_ids::get));
-
+        
+      game_state.cards.addAll(game_state.current_cards);
+      
       for (Player pl : game_state.players) {
         if (!pl_map.containsKey(pl.name)) {
           continue;
@@ -237,7 +239,7 @@ class OnlineScoreboardStageContext extends ScoreboardStageContext {
 
         pl.reset();
       }
-      
+          
       for (Player pl : game_state.players) {
         if (!pl_map.containsKey(pl.name)) {
           continue;
@@ -500,7 +502,6 @@ class BeginOnlineStageContext extends GameStageContext {
       errstr = "Address is not valid";
       return false;
     }
-    println(addr_parts[0], server_port);
     Client dummy_client = new Client(APP, addr_parts[0], server_port);
     if (!dummy_client.active()) {
       errstr = "Can not connect to this server";
