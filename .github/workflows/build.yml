@@ -10,10 +10,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: Cache node modules
+        id: cache-processing-bin-win
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-processing-bin-win
+        with:
+          path: .\processing-4.2
+          key: processing
 
-        
-   
-      - name: Download Processing Binary and Sound Lib 
+      - if: ${{ steps.cache-processing-bin-win.outputs.cache-hit != 'true' }}
+        name: Download Processing Binary and Sound Lib 
         shell: powershell  
         run: |
           $ProgressPreference = 'SilentlyContinue'
@@ -51,8 +59,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-     
-      - name: Download Processing Binary and Sound Lib
+        
+      - name: Cache Processing
+        id: cache-processing-bin-linux
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-processing-bin-linux
+        with:
+          path: ./processing-4.2
+          key: processing
+
+      - if: ${{ steps.cache-processing-bin-linux.outputs.cache-hit != 'true' }}
+        name: Download Processing Binary and Sound Lib
         run: |
           wget 'https://github.com/processing/processing4/releases/download/processing-1292-4.2/processing-4.2-linux-x64.tgz'
           tar -xf 'processing-4.2-linux-x64.tgz'
