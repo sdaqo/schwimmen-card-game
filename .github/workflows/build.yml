@@ -1,0 +1,96 @@
+name: 'Build and Release for Linux'
+  
+on:
+  workflow_dispatch:
+  
+jobs:
+  build-windows:
+    name: 'Build and Release for Windows'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+        
+   
+      - name: Download Processing Binary and Sound Lib 
+        shell: powershell  
+        run: |
+          $ProgressPreference = 'SilentlyContinue'
+          Invoke-WebRequest 'https://github.com/processing/processing4/releases/download/processing-1292-4.2/processing-4.2-windows-x64.zip' ^
+            -OutFile processing.zip `
+            -UseBasicParsing
+            
+          Expand-Archive processing.zip -DestinationPath .
+          
+          Invoke-WebRequest 'https://github.com/processing/processing-sound/releases/download/v2.3.1/sound.zip'
+            -OutFile sound.zip `
+            -UseBasicParsing
+            
+          Expand-Archive sound.zip -DestinationPath ~/sketchbook/libraries/
+
+      - name: Build with Java      
+        shell: powershell  
+        run: |
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game" --variant="windows-amd64" --output="schwimmen-win64-java" --export
+          Compress-Archive schwimmen-win64-java ./schwimmen-win64-java.zip
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="schwimmen-server-win64-java" --export               
+          Compress-Archive schwimmen-server-win64-java ./schwimmen-server-win64-java.zip
+              
+      - name: Build w/out Java      
+        shell: powershell  
+        run: |         
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game" --variant="windows-amd64" --output="schwimmen-win64-java" --no-java --export
+          Compress-Archive schwimmen-win64 ./schwimmen-win64.zip
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="schwimmen-server-win64" --no-java --export               
+          Compress-Archive schwimmen-server-win64 ./schwimmen-server-win64.zip
+ 
+  build-linux:
+    name: 'Build and Release for Linux'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+     
+      - name: Download Processing Binary and Sound Lib
+        run: |
+          wget 'https://github.com/processing/processing4/releases/download/processing-1292-4.2/processing-4.2-linux-x64.tgz'
+          tar -xf 'processing-4.2-linux-x64.tgz'
+          
+          wget 'https://github.com/processing/processing-sound/releases/download/v2.3.1/sound.zip'
+          unzip sound.zip
+          mkdir -p ~/sketchbook/libraries
+          mv ./sound/ ~/sketchbook/libraries
+          
+      - name: Build with Java
+        run: |
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game" --variant="linux-amd64" --output="schwimmen-amd64-java" --export
+          tar -czvf schwimmen-amd64-java.tar.gz -C schwimmen-amd64-java/ .
+          
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-amd64-java" --export
+          tar -czvf schwimmen-server-amd64-java.tar.gz -C schwimmen-amd64-java/ .
+          
+          
+      - name: Build w/out Java
+        run: |
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game" --variant="linux-amd64" --output="schwimmen-amd64" --no-java --export
+          tar -czvf schwimmen-amd64.tar.gz -C schwimmen-amd64/ .
+          
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-amd64" --no-java --export
+          tar -czvf schwimmen-server-amd64.tar.gz -C schwimmen-amd64/ .
+          
+  release:
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "New Build"
+          files: |
+            LICENSE
+            *.tar.gz
+            *.zip
+    
