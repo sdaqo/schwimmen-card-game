@@ -5,7 +5,7 @@ on:
   
 jobs:
   build-windows:
-    name: 'Build and Release for Windows'
+    name: 'Build for Windows'
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -55,8 +55,13 @@ jobs:
           .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="$(pwd)\schwimmen-server-win64" --no-java --export               
           Compress-Archive schwimmen-server-win64 ./schwimmen-server-win64.zip
  
+      - uses: actions/upload-artifact@v2
+        with:
+          name: win-artifact
+          path: .\*.zip
+ 
   build-linux:
-    name: 'Build and Release for Linux'
+    name: 'Build for Linux'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -100,11 +105,28 @@ jobs:
           
           ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-amd64" --no-java --export
           tar -czvf schwimmen-server-amd64.tar.gz -C schwimmen-amd64/ .
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: linux-artifact
+          path: ./*.tar.gz
           
   release:
+    name: 'Release Artifacts'
     needs: [build-windows, build-linux]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - uses: actions/download-artifact@v2
+        with:
+          name: linux-artifact
+          
+      - uses: actions/download-artifact@v2
+        with:
+          name: win-artifact
+          
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
