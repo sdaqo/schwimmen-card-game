@@ -20,7 +20,7 @@ jobs:
           path: |
             .\processing-4.2
             ~/Documents/Processing/libraries/
-          key: processing
+          key: processing-win
 
       - if: ${{ steps.cache-processing-bin-win.outputs.cache-hit != 'true' }}
         name: Download Processing Binary and Sound Lib 
@@ -42,17 +42,17 @@ jobs:
       - name: Build with Java      
         shell: powershell  
         run: |
-          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game" --variant="windows-amd64" --output="schwimmen-win64-java" --export
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game" --variant="windows-amd64" --output="$(pwd)\schwimmen-win64-java" --export
           Compress-Archive schwimmen-win64-java ./schwimmen-win64-java.zip
-          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="schwimmen-server-win64-java" --export               
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="$(pwd)\schwimmen-server-win64-java" --export               
           Compress-Archive schwimmen-server-win64-java ./schwimmen-server-win64-java.zip
               
       - name: Build w/out Java      
         shell: powershell  
         run: |         
-          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game" --variant="windows-amd64" --output="schwimmen-win64-java" --no-java --export
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game" --variant="windows-amd64" --output="$(pwd)\schwimmen-win64-java" --no-java --export
           Compress-Archive schwimmen-win64 ./schwimmen-win64.zip
-          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="schwimmen-server-win64" --no-java --export               
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="$(pwd)\schwimmen-server-win64" --no-java --export               
           Compress-Archive schwimmen-server-win64 ./schwimmen-server-win64.zip
  
   build-linux:
@@ -71,7 +71,7 @@ jobs:
           path: | 
             ./processing-4.2
             ~/sketchbook/libraries/
-          key: processing
+          key: processing-linux
 
       - if: ${{ steps.cache-processing-bin-linux.outputs.cache-hit != 'true' }}
         name: Download Processing Binary and Sound Lib
