@@ -17,7 +17,9 @@ jobs:
         env:
           cache-name: cache-processing-bin-win
         with:
-          path: .\processing-4.2
+          path: |
+            .\processing-4.2
+            ~/Documents/Processing/libraries/
           key: processing
 
       - if: ${{ steps.cache-processing-bin-win.outputs.cache-hit != 'true' }}
@@ -35,7 +37,7 @@ jobs:
             -OutFile sound.zip `
             -UseBasicParsing
             
-          Expand-Archive sound.zip -DestinationPath ~/sketchbook/libraries/
+          Expand-Archive sound.zip -DestinationPath ~/Documents/Processing/libraries/
 
       - name: Build with Java      
         shell: powershell  
@@ -66,7 +68,9 @@ jobs:
         env:
           cache-name: cache-processing-bin-linux
         with:
-          path: ./processing-4.2
+          path: | 
+            ./processing-4.2
+            ~/sketchbook/libraries/
           key: processing
 
       - if: ${{ steps.cache-processing-bin-linux.outputs.cache-hit != 'true' }}
