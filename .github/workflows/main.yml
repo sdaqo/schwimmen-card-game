@@ -1,0 +1,56 @@
+name: 'Build and Release for Linux'
+  
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    name: 'Build and Release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Cache node modules
+        id: cache-processing-bin
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-processing-bin
+        with:
+          path: ./processing-4.2
+          key: processing
+
+      - if: ${{ steps.cache-processing-bin.outputs.cache-hit != 'true' }}
+        name: Download Processing Binary
+        run: |
+          wget 'https://github.com/processing/processing4/releases/download/processing-1292-4.2/processing-4.2-linux-x64.tgz'
+          tar -xf 'processing-4.2-linux-x64.tgz'
+          
+      - name: Build with Java
+        run: |
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game" --variant="linux-amd64" --output="schwimmen-amd64-java" --export
+          tar -czvf schwimmen-amd64-java.tar.gz -C schwimmen-amd64-java/ .
+          
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-amd64-java" --export
+          tar -czvf schwimmen-server-amd64-java.tar.gz -C schwimmen-amd64-java/ .
+          
+          
+      - name: Build w/out Java
+        run: |
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game" --variant="linux-amd64" --output="schwimmen-amd64" --no-java --export
+          tar -czvf schwimmen-amd64.tar.gz -C schwimmen-amd64/ .
+          
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-amd64" --no-java --export
+          tar -czvf schwimmen-server-amd64.tar.gz -C schwimmen-amd64/ .
+          
+      
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "New Build"
+          files: |
+            LICENSE
+            *.tar.gz
+  
