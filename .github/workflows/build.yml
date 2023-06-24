@@ -95,7 +95,7 @@ jobs:
           tar -czvf schwimmen-linux64-java.tar.gz -C schwimmen-linux64-java/ .
           
           ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-linux64-java" --export
-          tar -czvf schwimmen-server-linux64-java.tar.gz -C schwimmen-linux64-java/ .
+          tar -czvf schwimmen-server-linux64-java.tar.gz -C schwimmen-server-linux64-java/ .
           
           
       - name: Build w/out Java
@@ -104,7 +104,7 @@ jobs:
           tar -czvf schwimmen-linux64.tar.gz -C schwimmen-linux64/ .
           
           ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-linux64" --no-java --export
-          tar -czvf schwimmen-server-linux64.tar.gz -C schwimmen-linux64/ .
+          tar -czvf schwimmen-server-linux64.tar.gz -C schwimmen-server-linux64/ .
       
       - uses: actions/upload-artifact@v2
         with:
