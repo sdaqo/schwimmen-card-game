@@ -91,20 +91,20 @@ jobs:
           
       - name: Build with Java
         run: |
-          ./processing-4.2/processing-java --sketch="$(pwd)/card_game" --variant="linux-amd64" --output="schwimmen-amd64-java" --export
-          tar -czvf schwimmen-amd64-java.tar.gz -C schwimmen-amd64-java/ .
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game" --variant="linux-amd64" --output="schwimmen-linux64-java" --export
+          tar -czvf schwimmen-linux64-java.tar.gz -C schwimmen-linux64-java/ .
           
-          ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-amd64-java" --export
-          tar -czvf schwimmen-server-amd64-java.tar.gz -C schwimmen-amd64-java/ .
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-linux64-java" --export
+          tar -czvf schwimmen-server-linux64-java.tar.gz -C schwimmen-linux64-java/ .
           
           
       - name: Build w/out Java
         run: |
-          ./processing-4.2/processing-java --sketch="$(pwd)/card_game" --variant="linux-amd64" --output="schwimmen-amd64" --no-java --export
-          tar -czvf schwimmen-amd64.tar.gz -C schwimmen-amd64/ .
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game" --variant="linux-amd64" --output="schwimmen-linux64" --no-java --export
+          tar -czvf schwimmen-linux64.tar.gz -C schwimmen-linux64/ .
           
-          ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-amd64" --no-java --export
-          tar -czvf schwimmen-server-amd64.tar.gz -C schwimmen-amd64/ .
+          ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-linux64" --no-java --export
+          tar -czvf schwimmen-server-linux64.tar.gz -C schwimmen-linux64/ .
       
       - uses: actions/upload-artifact@v2
         with:
