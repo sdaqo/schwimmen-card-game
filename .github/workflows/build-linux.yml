@@ -21,10 +21,15 @@ jobs:
           key: processing
 
       - if: ${{ steps.cache-processing-bin.outputs.cache-hit != 'true' }}
-        name: Download Processing Binary
+        name: Download Processing Binary and Sound Lib
         run: |
           wget 'https://github.com/processing/processing4/releases/download/processing-1292-4.2/processing-4.2-linux-x64.tgz'
           tar -xf 'processing-4.2-linux-x64.tgz'
+          
+          wget 'https://github.com/processing/processing-sound/releases/download/v2.3.1/sound.zip'
+          unzip sound.zip
+          mkdir -p ~/sketchbook/libraries
+          mv ./sound/ ~/sketchbook/libraries
           
       - name: Build with Java
         run: |
