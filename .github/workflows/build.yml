@@ -50,7 +50,7 @@ jobs:
       - name: Build w/out Java      
         shell: powershell  
         run: |         
-          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game" --variant="windows-amd64" --output="$(pwd)\schwimmen-win64-java" --no-java --export
+          .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game" --variant="windows-amd64" --output="$(pwd)\schwimmen-win64" --no-java --export
           Compress-Archive schwimmen-win64 ./schwimmen-win64.zip
           .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="$(pwd)\schwimmen-server-win64" --no-java --export               
           Compress-Archive schwimmen-server-win64 ./schwimmen-server-win64.zip
