@@ -1,4 +1,4 @@
-name: 'Build and Release for Linux'
+name: 'Build and Release for Linux & Windows'
   
 on:
   workflow_dispatch:
