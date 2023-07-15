@@ -3,6 +3,10 @@
 This card game is based of a popular german & austrian card game called [Schwimmen](https://en.wikipedia.org/wiki/Schwimmen) (eng. swimming) and can be played offline or online.
 
 
+https://github.com/sdaqo/schwimmen-card-game/assets/63876564/357cc2f1-a86d-4215-9af1-97facb16ecb5
+
+
+
 
 ## Game Setup
 
