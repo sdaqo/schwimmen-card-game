@@ -54,7 +54,13 @@ jobs:
           Compress-Archive schwimmen-win64 ./schwimmen-win64.zip
           .\processing-4.2\processing-java.exe --sketch="$(pwd)\card_game_server" --variant="windows-amd64" --output="$(pwd)\schwimmen-server-win64" --no-java --export               
           Compress-Archive schwimmen-server-win64 ./schwimmen-server-win64.zip
- 
+
+      - name: Delete Processing
+        shell: powershell
+        run: |
+          Remove-Item ./sound.zip
+          Remove-Item ./processing.zip
+          
       - uses: actions/upload-artifact@v2
         with:
           name: win-artifact
@@ -106,6 +112,11 @@ jobs:
           ./processing-4.2/processing-java --sketch="$(pwd)/card_game_server" --variant="linux-amd64" --output="schwimmen-server-linux64" --no-java --export
           tar -czvf schwimmen-server-linux64.tar.gz -C schwimmen-server-linux64/ .
       
+      - name: Delete Processing
+        run: |
+          rm ./sound.zip
+          rm ./processing-4.2-linux-x64.tgz
+          
       - uses: actions/upload-artifact@v2
         with:
           name: linux-artifact
