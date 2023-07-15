@@ -1,6 +1,8 @@
 # Schwimmen Card Game & Server
 
-This card game is based of a popular german & austrian card game called [Schwimmen](https://en.wikipedia.org/wiki/Schwimmen) (eng. swimming) and can be played offline or online.
+This card game is based of a popular german & austrian card game called [Schwimmen](https://en.wikipedia.org/wiki/Schwimmen) (eng. swimming) and can be played offline or online. 
+
+**DISCLAIMER: May include bugs (this is my first proper project with java/processing)**
 
 
 https://github.com/sdaqo/schwimmen-card-game/assets/63876564/8f41e4e3-4527-4db8-9842-468975cafd91
