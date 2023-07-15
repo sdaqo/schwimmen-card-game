@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
-
 int SERVER_PORT = 6969;
 String SERVER_HOST = "0.0.0.0";
 
@@ -34,8 +33,24 @@ void setup() {
   surface.setVisible(false);
   global_clients = new ArrayList<Client>();
   rooms = new HashMap<String, Room>();
-  server = new Server(this, SERVER_PORT, SERVER_HOST);
   LOGGER.setLevel(Level.ALL);
+
+  String portEnv = System.getenv("SCHWIMMEN_PORT");
+  if (portEnv != null) {
+    try {
+      SERVER_PORT = Integer.parseInt(portEnv);
+      LOGGER.info(msg("Using custom Port:", portEnv));
+    } catch (NumberFormatException e) {
+    }
+  }
+  
+  String hostEnv = System.getenv("SCHWIMMEN_HOST");
+  if (hostEnv != null) {
+    SERVER_HOST = hostEnv;
+    LOGGER.info(msg("Using custom Host:", hostEnv));
+  }
+  
+  server = new Server(this, SERVER_PORT, SERVER_HOST);
   LOGGER.info(msg("Started Server with host", SERVER_HOST, "on Port", SERVER_PORT));
 }
 

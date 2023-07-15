@@ -854,7 +854,7 @@ class MenuStageContext extends GameStageContext {
     textSize(80);
     text("Schwimmen Card Game", width/2-textWidth("Schwimmen Card Game")/2, height/10);
     textSize(30);
-    text("Programmed by Paul Smöch", width/2-textWidth("Programmed by Paul Smöch")/2, height/7);
+    text("Programmed by sdaqo", width/2-textWidth("Programmed by sdaqo")/2, height/7);
 
     this.renderUI();
 
